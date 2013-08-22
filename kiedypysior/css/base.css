@@ -1,0 +1,67 @@
+body{
+    background: #2f2f2f url('../img/tlo.jpg') repeat center center;
+}
+
+#content{
+font-family: 'Titillium Web', sans-serif;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  color: #eee;
+  border-radius: 4px;
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 50px;
+  font-weight: 300;
+  padding: 30px;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+  text-align: justify;
+  vertical-align: middle;
+  width: 800px;
+  height: 200px;
+  position: absolute;
+  z-index: 100000;
+  left: 50%;
+  top: 50%;
+  margin: -150px auto auto -280px;
+  text-shadow: 1px 1px 3px #bbb;
+}
+
+#content h1 {
+ font-family: 'Titillium Web', sans-serif;
+  font-size: 50px;
+  font-weight: 300;
+}
+#content h1 span{
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 50px;
+  font-weight: 300;
+    text-shadow: none;
+
+ -webkit-animation: color_change 1s infinite alternate;
+ -moz-animation: color_change 1s infinite alternate;
+ -ms-animation: color_change 1s infinite alternate;
+ -o-animation: color_change 1s infinite alternate;
+ animation: color_change 1s infinite alternate;
+}
+
+@-webkit-keyframes color_change {
+ from { color: #fff;  font-size: 50px;  font-weight: 300;  }
+ to { color: #FF2600;  font-size: 80px;  font-weight: 400; }
+}
+@-moz-keyframes color_change {
+ from { color: #fff;  font-size: 50px;  font-weight: 300; }
+ to { color: #FF2600;  font-size: 80px;  font-weight: 400; }
+}
+@-ms-keyframes color_change {
+ from { color: #fff;  font-size: 50px;  font-weight: 300; }
+ to { color: #FF2600;  font-size: 80px;  font-weight: 400; }
+}
+@-o-keyframes color_change {
+ from { color: #fff;  font-size: 50px;  font-weight: 300; }
+ to { color: #FF2600;  font-size: 80px;  font-weight: 400; }
+}
+@keyframes color_change {
+ from { color: #fff;  font-size: 50px;  font-weight: 300; }
+ to { color: #FF2600;  font-size: 80px;  font-weight: 400; }
+}

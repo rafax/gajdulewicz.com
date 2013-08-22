@@ -1,111 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Kiedy</title>
-  <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-  <!--[if lt IE 9]>
-  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
-
-  <!-- Le styles -->
-  <link href='http://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'>
-
-  <style type="text/css">
-body{
-    background: #2f2f2f url(../img/tlo.jpg) repeat center center;
-}
-
-#content{
-font-family: 'Titillium Web', sans-serif;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  color: #eee;
-  border-radius: 4px;
-  font-family: 'Titillium Web', sans-serif;
-  font-size: 50px;
-  font-weight: 300;
-  padding: 30px;
-  position: relative;
-  -webkit-font-smoothing: antialiased;
-  text-align: justify;
-  vertical-align: middle;
-  width: 800px;
-  height: 200px;
-  position: absolute;
-  z-index: 100000;
-  left: 50%;
-  top: 50%;
-  margin: -150px auto auto -280px;
-  text-shadow: 1px 1px 3px #bbb;
-}
-
-#content h1 {
- font-family: 'Titillium Web', sans-serif;
-  font-size: 50px;
-  font-weight: 300;
-}
-#content h1 span{
-  font-family: 'Titillium Web', sans-serif;
-  font-size: 50px;
-  font-weight: 300;
-    text-shadow: none;
-
- -webkit-animation: color_change 1s infinite alternate;
- -moz-animation: color_change 1s infinite alternate;
- -ms-animation: color_change 1s infinite alternate;
- -o-animation: color_change 1s infinite alternate;
- animation: color_change 1s infinite alternate;
-}
-
-@-webkit-keyframes color_change {
- from { color: #fff;  font-size: 50px;  font-weight: 300;  }
- to { color: #FF2600;  font-size: 80px;  font-weight: 400; }
-}
-@-moz-keyframes color_change {
- from { color: #fff;  font-size: 50px;  font-weight: 300; }
- to { color: #FF2600;  font-size: 80px;  font-weight: 400; }
-}
-@-ms-keyframes color_change {
- from { color: #fff;  font-size: 50px;  font-weight: 300; }
- to { color: #FF2600;  font-size: 80px;  font-weight: 400; }
-}
-@-o-keyframes color_change {
- from { color: #fff;  font-size: 50px;  font-weight: 300; }
- to { color: #FF2600;  font-size: 80px;  font-weight: 400; }
-}
-@keyframes color_change {
- from { color: #fff;  font-size: 50px;  font-weight: 300; }
- to { color: #FF2600;  font-size: 80px;  font-weight: 400; }
-}
-</style>
-
-</head>
-
-<body>
-  <div id="content">
-    <h1>
-      Pysior przyleci za
-      <span></span>
-      dni!
-    </h1>
-  </div>
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js"></script>
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js"></script>
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js"></script>
-  <script type="text/javascript">
-    $(function(){
-      var landing = moment('2013-09-15 18:40 -07:00');
-      var days = landing.diff(moment(),'days');
-      var hours = landing.diff(moment(),'hours')%24;
-      $("#content h1 span").text(_.template('<%= days %>',  {days:days}));
-      document.title = days + "d i " +hours+"h :)"
-    });
-    </script>
-  <script src="js/sizzle.min.js"></script>
-  <script src="js/threecanvas.js"></script>
-  <script src="js/snow.js"></script>
-  <script src="js/core.js"></script>
-</body>
+<!DOCTYPE HTML>
+<html lang="en-US">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="refresh" content="1;url=kiedypysior/index.html">
+        <script type="text/javascript">
+            window.location.href = "kiedypysior/index.html"
+        </script>
+        <title>Page Redirection</title>
+    </head>
+    <body>
+        <!-- Note: don't tell people to `click` the link, just tell them that it is a link. -->
+        If you are not redirected automatically, follow the <a href='kiedypysior/index.html'>link to example</a>
+    </body>
 </html>

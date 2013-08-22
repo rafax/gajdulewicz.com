@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Kiedy</title>
+  <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <!-- Le styles -->
+  <link href='http://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'>
+
+</head>
+
+<body>
+  <div id="content">
+    <h1>
+      Pysior przyleci za
+      <span></span>
+      dni!
+    </h1>
+  </div>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js"></script>
+  <script type="text/javascript">
+    $(function(){
+      var landing = moment('2013-09-15 18:40 -07:00');
+      var days = landing.diff(moment(),'days');
+      var hours = landing.diff(moment(),'hours')%24;
+      $("#content h1 span").text(_.template('<%= days %>',  {days:days}));
+      document.title = days + "d i " +hours+"h :)"
+    });
+    </script>
+  <script src="js/sizzle.min.js"></script>
+  <script src="js/threecanvas.js"></script>
+  <script src="js/snow.js"></script>
+  <script src="js/core.js"></script>
+  <link href="css/base.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+</body>
+</html>
