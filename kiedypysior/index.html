@@ -10,9 +10,7 @@
 
   <!-- Le styles -->
   <link href='http://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'>
-  <link href="css/base.css?body=1" rel="stylesheet" type="text/css" media="all">
-
-</head>
+  <link href="css/base.css?body=1" rel="stylesheet" type="text/css" media="all"></head>
 
 <body>
   <div id="content">
@@ -28,7 +26,7 @@
   <script type="text/javascript">
     $(function(){
       var landing = moment('2013-09-15 18:40 -07:00');
-      var days = landing.diff(moment(),'days');
+      var days = landing.diff(moment(),'days')-1;
       var hours = landing.diff(moment(),'hours')%24;
       $("#content h1 span").text(_.template('<%= days %>',  {days:days}));
       document.title = days + "d i " +hours+"h :)"
