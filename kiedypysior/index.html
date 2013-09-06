@@ -31,6 +31,11 @@
       if(days>=1){
         $("#content h1 span").text(_.template('<%= days %>',  {days:days}));
         document.title = days + "d i " +hours+"h :)";
+      } else {
+        $("#content h1").html("Jeszcze tylko <span></span> godzin!");
+        $("#content h1 span").text(_.template('<%= hours %>',  {hours:hours}));
+        var mins = landing.diff(moment(),'minutes')%60;
+        document.title = hours + "h i " +mins+"m :)";
       }
     });
     </script>
