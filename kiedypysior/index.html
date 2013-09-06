@@ -15,7 +15,7 @@
 <body>
   <div id="content">
     <h1>
-      Pysior przyleci za
+      Jeszcze tylko
       <span></span>
       dni!
     </h1>
@@ -28,8 +28,10 @@
       var landing = moment('2013-09-15 18:40 -07:00');
       var days = landing.diff(moment(),'days')-1;
       var hours = landing.diff(moment(),'hours')%24;
-      $("#content h1 span").text(_.template('<%= days %>',  {days:days}));
-      document.title = days + "d i " +hours+"h :)"
+      if(days>=1){
+        $("#content h1 span").text(_.template('<%= days %>',  {days:days}));
+        document.title = days + "d i " +hours+"h :)";
+      }
     });
     </script>
   <script src="js/sizzle.min.js"></script>
