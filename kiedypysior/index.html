@@ -17,7 +17,7 @@
     <h1>
       Jeszcze tylko
       <span></span>
-      dni!
+      godzin!
     </h1>
   </div>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js"></script>
@@ -25,18 +25,11 @@
   <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js"></script>
   <script type="text/javascript">
     $(function(){
-      var landing = moment('2013-09-15 18:40 -07:00');
-      var days = landing.diff(moment(),'days')-1;
-      var hours = landing.diff(moment(),'hours')%24;
-      if(days>=1){
-        $("#content h1 span").text(_.template('<%= days %>',  {days:days}));
-        document.title = days + "d i " +hours+"h :)";
-      } else {
-        $("#content h1").html("Jeszcze tylko <span></span> godzin!");
-        $("#content h1 span").text(_.template('<%= hours %>',  {hours:hours}));
-        var mins = landing.diff(moment(),'minutes')%60;
-        document.title = hours + "h i " +mins+"m :)";
-      }
+      var landing = moment('2013-09-14 18:40 -07:00');
+      var hours = landing.diff(moment(),'hours');
+      $("#content h1 span").text(_.template('<%= hours %>',  {hours:hours}));
+      var mins = landing.diff(moment(),'minutes')%60;
+      document.title = hours + "h i " +mins+"m :)";
     });
     </script>
   <script src="js/sizzle.min.js"></script>
