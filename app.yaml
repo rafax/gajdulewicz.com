@@ -8,9 +8,8 @@ handlers:
 
 - url: /(.+)
   static_files: public/\1
+  upload: public/(.*)
 
-- url: /screamer/(.+)
-  static_files: public/screamer/\1
 
 - url: /
   static_files: public/index.html
