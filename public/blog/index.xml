@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>My New Hugo Site</title>
+    <link>http://replace-this-with-your-hugo-site.com/</link>
+    <description>Recent content on My New Hugo Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 20 Jul 2015 21:04:18 +0200</lastBuildDate>
+    <atom:link href="http://replace-this-with-your-hugo-site.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Nothing here yet</title>
+      <link>http://replace-this-with-your-hugo-site.com/post/1/</link>
+      <pubDate>Mon, 20 Jul 2015 21:04:18 +0200</pubDate>
+      
+      <guid>http://replace-this-with-your-hugo-site.com/post/1/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>about</title>
+      <link>http://replace-this-with-your-hugo-site.com/about/</link>
+      <pubDate>Mon, 20 Jul 2015 21:03:33 +0200</pubDate>
+      
+      <guid>http://replace-this-with-your-hugo-site.com/about/</guid>
+      <description>
+
+&lt;h2 id=&#34;rafal-gajdulewicz:6083a88ee3411b0d17ce02d738f69d47&#34;&gt;Rafal Gajdulewicz&lt;/h2&gt;
+
+&lt;p&gt;So you found me.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
