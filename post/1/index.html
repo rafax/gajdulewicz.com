@@ -87,7 +87,7 @@
     </span>
     <p><a href="https://golang.org/">Go</a> has been my go-to side project language for quite some time now (since before v1.0), and when I started the <a href="http://cryptopals.com">Matasano crypto challenges</a> it seemed like a perfect fit for a number of reasons - it doesn&rsquo;t force me to write a lot of boilerplate, is low-level enough to allow implementing your own crypto primitives and it comes with a rich standard library (I am looking at you Scala). I made my way through the first set and while solving one of the problems I wanted to run a certain function in parallel.</p>
 
-<p>The simplest way of making this use all CPU cores is to run each calculation in it&rsquo;s own goroutine, and the standard way tracking if all of them completed is using a sync.WaitGroup - for simplicity this code assumes we only care about side effects (printing) and do not consume the result:
+<p>The simplest way of making this use all CPU cores is to run each calculation in it&rsquo;s own goroutine, and the standard way tracking if all of them completed is using a sync.WaitGroup - for simplicity&rsquo;s sake this code assumes we only care about side effects (printing) and do not consume the result:
 <div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span><span style="color: #f92672">package</span> <span style="color: #a6e22e">main</span>
 
 <span style="color: #f92672">import</span> <span style="color: #f8f8f2">(</span>
@@ -151,7 +151,7 @@ fatal error: all goroutines are asleep - deadlock!
 
 <p>What is happening here - we only extracted a function? Go is kind enough to let us know that our program is deadlocked - but why? Our simple refactoring wasn&rsquo;t correct - we changed the way the code run in goroutine uses the sync.WaitGroup variable. Previously it closed (as in <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming">closure</a>) over it, now it takes it as a parameter.</p>
 
-<p>The issue is that the WaitGroup is passed by value, meaning each goroutine gets a copy of the WaitGroup. This means that when we call wg.Wait() we are waiting on a WaitGroup that will never be modified by child goroutines, and we will never exit the main function. The fix is simple - we pass a pointer to all goroutines, letting WaitGroup take care of concurrent modifications:
+<p>The issue is that the WaitGroup is passed by value, so each goroutine gets a copy of the WaitGroup. This means that when we call wg.Wait() we are waiting on a WaitGroup that will never be modified by child goroutines, and we will never exit the main function. The fix is simple - we pass a pointer to all goroutines, letting WaitGroup take care of concurrent modifications:
 <div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span><span style="color: #f92672">package</span> <span style="color: #a6e22e">main</span>
 
 <span style="color: #f92672">import</span> <span style="color: #f8f8f2">(</span>
