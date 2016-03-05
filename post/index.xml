@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Rafal Gajdulewicz</title>
-    <link>//blog.gajdulewicz.com/post/</link>
+    <link>http://blog.gajdulewicz.com/post/</link>
     <description>Recent content in Posts on Rafal Gajdulewicz</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 20 Jul 2015 21:04:18 +0200</lastBuildDate>
-    <atom:link href="//blog.gajdulewicz.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://blog.gajdulewicz.com/post/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Go gotchas - WaitGroup (and struct paramaters / method receivers)</title>
-      <link>//blog.gajdulewicz.com/post/1/</link>
+      <link>http://blog.gajdulewicz.com/post/1/</link>
       <pubDate>Mon, 20 Jul 2015 21:04:18 +0200</pubDate>
       
-      <guid>//blog.gajdulewicz.com/post/1/</guid>
+      <guid>http://blog.gajdulewicz.com/post/1/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;https://golang.org/&#34;&gt;Go&lt;/a&gt; has been my go-to side project language for quite some time now (since before v1.0), and when I started the &lt;a href=&#34;http://cryptopals.com&#34;&gt;Matasano crypto challenges&lt;/a&gt; it seemed like a perfect fit for a number of reasons - it doesn&amp;rsquo;t force me to write a lot of boilerplate, is low-level enough to allow implementing your own crypto primitives and it comes with a rich standard library (I am looking at you Scala). I made my way through the first set and while solving one of the problems I wanted to run a certain function in parallel.&lt;/p&gt;
 
 &lt;p&gt;The simplest way of making this use all CPU cores is to run each calculation in it&amp;rsquo;s own goroutine, and the standard way tracking if all of them completed is using a sync.WaitGroup - for simplicity this code assumes we only care about side effects (printing) and do not consume the result:
