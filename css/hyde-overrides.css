@@ -5,7 +5,7 @@
 .sidebar-about h1 {
   color: #fff;
   margin-top: 0;
-  font-family: "Abril Fatface", serif;
+  /*font-family: "Abril Fatface", serif;*/
   font-size: 2.5rem;
 }
 
@@ -13,4 +13,17 @@
   padding-left: 0;
   list-style: none;
   margin-bottom: 1rem;
+}
+
+html {
+  font-family: "Raleway", sans-serif;
+}
+
+.highlight pre {
+	background: #272822;
+	padding: 1em;
+}
+
+.sidebar h1{
+	  font-family: "Raleway", sans-serif;
 }

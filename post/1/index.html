@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
-  <title>Nothing here yet &middot; </title>
+  <title>Go gotchas - WaitGroup (and struct paramaters / method receivers) &middot; Rafal Gajdulewicz</title>
 
   
   <link rel="stylesheet" href="https://blog.gajdulewicz.com/css/poole.css">
@@ -18,9 +18,11 @@
   
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <link href="http://fonts.googleapis.com/css?family=Raleway:400,300" rel="stylesheet" type="text/css">
+  
 
   
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://blog.gajdulewicz.com/apple-touch-icon-144-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://blog.gajdulewicz.com/touch-icon-144-precomposed.png">
   <link href="https://blog.gajdulewicz.com/favicon.png" rel="icon">
 
   
@@ -31,50 +33,156 @@
   <meta name="description" content="">
   <meta name="keywords" content="">
   
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-67347513-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+  
 </head>
-<body>
+<body class="theme-base-0d layout-reverse">
 <div class="sidebar">
-  <div class="container sidebar-sticky">
+  <div class="container">
     <div class="sidebar-about">
       
-      <h1></h1>
+      <h1>Rafal Gajdulewicz</h1>
       
     </div>
 
     <ul class="sidebar-nav">
       <li class="sidebar-nav-item"><a href="https://blog.gajdulewicz.com/">Blog</a></li>
       
-      <li class="sidebar-nav-item"><a href="https://blog.gajdulewicz.com/about/">about</a></li>
+      <li class="sidebar-nav-item"><a href="https://blog.gajdulewicz.com/about/">About me</a></li>
       
     </ul>
 
     <ul class="sidebar-nav">
       <li class="sidebar-nav-item">
+      <a href="https://github.com/rafax"><i class="fa fa-github-square fa-3x"></i></a>
       
       
+      <a href="https://linkedin.com/in/gajdulewicz"><i class="fa fa-linkedin-square fa-3x"></i></a>
       
       
+      <a href="https://twitter.com/gdlwcz"><i class="fa fa-twitter-square fa-3x"></i></a>
       
       
       </li>
     </ul>
 
-    <p>Copyright &copy; 2015 <a href="https://blog.gajdulewicz.com/license/">License</a><br/>
-       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
+    
+
   </div>
 </div>
 
 
 <div class="content container">
   <div class="post">
-    <h1>Nothing here yet</h1>
-    <span class="post-date">Jul 20, 2015 &middot; 0 minute read
+    <h1 class="post-title">Go gotchas - WaitGroup (and struct paramaters / method receivers)</h1>
+    <span class="post-date">Jul 20, 2015 &middot; 3 minute read
     </span>
-    
+    <p><a href="https://golang.org/">Go</a> has been my go-to side project language for quite some time now (since before v1.0), and when I started the <a href="http://cryptopals.com">Matasano crypto challenges</a> it seemed like a perfect fit for a number of reasons - it doesn&rsquo;t force me to write a lot of boilerplate, is low-level enough to allow implementing your own crypto primitives and it comes with a rich standard library (I am looking at you Scala). I made my way through the first set and while solving one of the problems I wanted to run a certain function in parallel.</p>
+
+<p>The simplest way of making this use all CPU cores is to run each calculation in it&rsquo;s own goroutine, and the standard way tracking if all of them completed is using a sync.WaitGroup - for simplicity this code assumes we only care about side effects (printing) and do not consume the result:
+<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span><span style="color: #f92672">package</span> <span style="color: #a6e22e">main</span>
+
+<span style="color: #f92672">import</span> <span style="color: #f8f8f2">(</span>
+	<span style="color: #e6db74">&quot;fmt&quot;</span>
+	<span style="color: #e6db74">&quot;sync&quot;</span>
+<span style="color: #f8f8f2">)</span>
+
+<span style="color: #66d9ef">func</span> <span style="color: #a6e22e">main</span><span style="color: #f8f8f2">()</span> <span style="color: #f8f8f2">{</span>
+	<span style="color: #a6e22e">numbers</span> <span style="color: #f92672">:=</span> <span style="color: #f8f8f2">[]</span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2">{</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">3</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">4</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">5</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">6</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">7</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">8</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">9</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">10</span><span style="color: #f8f8f2">}</span>
+	<span style="color: #66d9ef">var</span> <span style="color: #a6e22e">wg</span> <span style="color: #a6e22e">sync</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">WaitGroup</span>
+	<span style="color: #66d9ef">for</span> <span style="color: #a6e22e">_</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">n</span> <span style="color: #f92672">:=</span> <span style="color: #66d9ef">range</span> <span style="color: #a6e22e">numbers</span> <span style="color: #f8f8f2">{</span>
+		<span style="color: #a6e22e">wg</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Add</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">)</span>
+		<span style="color: #66d9ef">go</span> <span style="color: #66d9ef">func</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">in</span> <span style="color: #66d9ef">int</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span>
+			<span style="color: #a6e22e">fmt</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Printf</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&quot;%d: %d\n&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">in</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">cpuIntensive</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">in</span><span style="color: #f8f8f2">))</span>
+			<span style="color: #a6e22e">wg</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Done</span><span style="color: #f8f8f2">()</span>
+		<span style="color: #f8f8f2">}(</span><span style="color: #a6e22e">n</span><span style="color: #f8f8f2">)</span>
+	<span style="color: #f8f8f2">}</span>
+	<span style="color: #a6e22e">wg</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Wait</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">}</span>
+
+<span style="color: #75715e">// does something CPU intensive</span>
+<span style="color: #66d9ef">func</span> <span style="color: #a6e22e">cpuIntensive</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">n</span> <span style="color: #66d9ef">int</span><span style="color: #f8f8f2">)</span> <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">{</span>
+	<span style="color: #66d9ef">return</span> <span style="color: #a6e22e">n</span> <span style="color: #f92672">*</span> <span style="color: #a6e22e">n</span> <span style="color: #f92672">*</span> <span style="color: #a6e22e">n</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+
+This works fine, but wouldn&rsquo;t it be nice to extract the anonymous function to make things more readable / testable:</p>
+
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span><span style="color: #f92672">package</span> <span style="color: #a6e22e">main</span>
+
+<span style="color: #f92672">import</span> <span style="color: #f8f8f2">(</span>
+	<span style="color: #e6db74">&quot;fmt&quot;</span>
+	<span style="color: #e6db74">&quot;sync&quot;</span>
+<span style="color: #f8f8f2">)</span>
+
+<span style="color: #66d9ef">func</span> <span style="color: #a6e22e">main</span><span style="color: #f8f8f2">()</span> <span style="color: #f8f8f2">{</span>
+	<span style="color: #a6e22e">numbers</span> <span style="color: #f92672">:=</span> <span style="color: #f8f8f2">[]</span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2">{</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">10</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">100</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">1000</span><span style="color: #f8f8f2">}</span>
+	<span style="color: #66d9ef">var</span> <span style="color: #a6e22e">wg</span> <span style="color: #a6e22e">sync</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">WaitGroup</span>
+	<span style="color: #66d9ef">for</span> <span style="color: #a6e22e">_</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">n</span> <span style="color: #f92672">:=</span> <span style="color: #66d9ef">range</span> <span style="color: #a6e22e">numbers</span> <span style="color: #f8f8f2">{</span>
+		<span style="color: #a6e22e">wg</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Add</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">)</span>
+		<span style="color: #66d9ef">go</span> <span style="color: #a6e22e">runInGoroutine</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">n</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">wg</span><span style="color: #f8f8f2">)</span>
+	<span style="color: #f8f8f2">}</span>
+	<span style="color: #a6e22e">wg</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Wait</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">}</span>
+
+<span style="color: #66d9ef">func</span> <span style="color: #a6e22e">runInGoroutine</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">in</span> <span style="color: #66d9ef">int</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">wg</span> <span style="color: #a6e22e">sync</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">WaitGroup</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span>
+	<span style="color: #a6e22e">fmt</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Printf</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&quot;cpuIntensive(%d): %d\n&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">in</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">cpuIntensive</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">in</span><span style="color: #f8f8f2">))</span>
+	<span style="color: #a6e22e">wg</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Done</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">}</span>
+
+<span style="color: #75715e">// does something CPU intensive</span>
+<span style="color: #66d9ef">func</span> <span style="color: #a6e22e">cpuIntensive</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">n</span> <span style="color: #66d9ef">int</span><span style="color: #f8f8f2">)</span> <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">{</span>
+	<span style="color: #66d9ef">return</span> <span style="color: #a6e22e">n</span> <span style="color: #f92672">*</span> <span style="color: #a6e22e">n</span> <span style="color: #f92672">*</span> <span style="color: #a6e22e">n</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+
+Turns out it&rsquo;s not that simple - this code completes the calculations but fails with
+<code>
+fatal error: all goroutines are asleep - deadlock!
+</code></p>
+
+<p>What is happening here - we only extracted a function? Go is kind enough to let us know that our program (or more correctly all goroutines we created) are deadlocked - but why? Our simple refactoring wasn&rsquo;t correct - we changed the way the code run in goroutine uses the sync.WaitGroup variable. Previously it closed (as in <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming">closure</a>)]) over it, now it takes it as a parameter. What happens here is that the WaitGroup is passed by value, meaning each goroutine gets a copy of the WaitGroup. This means that when we call wg.Wait() we are waiting on a WaitGroup that will never be modified. The fix is simple - we pass a pointer to all goroutines, letting WaitGroup take care of concurrent modifications:
+<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span><span style="color: #f92672">package</span> <span style="color: #a6e22e">main</span>
+
+<span style="color: #f92672">import</span> <span style="color: #f8f8f2">(</span>
+	<span style="color: #e6db74">&quot;fmt&quot;</span>
+	<span style="color: #e6db74">&quot;sync&quot;</span>
+<span style="color: #f8f8f2">)</span>
+
+<span style="color: #66d9ef">func</span> <span style="color: #a6e22e">main</span><span style="color: #f8f8f2">()</span> <span style="color: #f8f8f2">{</span>
+	<span style="color: #a6e22e">numbers</span> <span style="color: #f92672">:=</span> <span style="color: #f8f8f2">[]</span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2">{</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">10</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">100</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">1000</span><span style="color: #f8f8f2">}</span>
+	<span style="color: #66d9ef">var</span> <span style="color: #a6e22e">wg</span> <span style="color: #a6e22e">sync</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">WaitGroup</span>
+	<span style="color: #66d9ef">for</span> <span style="color: #a6e22e">_</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">n</span> <span style="color: #f92672">:=</span> <span style="color: #66d9ef">range</span> <span style="color: #a6e22e">numbers</span> <span style="color: #f8f8f2">{</span>
+		<span style="color: #a6e22e">wg</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Add</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">)</span>
+<span style="background-color: #49483e">		<span style="color: #66d9ef">go</span> <span style="color: #a6e22e">runInGoroutine</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">n</span><span style="color: #f8f8f2">,</span> <span style="color: #f92672">&amp;</span><span style="color: #a6e22e">wg</span><span style="color: #f8f8f2">)</span>
+</span>	<span style="color: #f8f8f2">}</span>
+	<span style="color: #a6e22e">wg</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Wait</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">}</span>
+
+<span style="background-color: #49483e"><span style="color: #66d9ef">func</span> <span style="color: #a6e22e">runInGoroutine</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">in</span> <span style="color: #66d9ef">int</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">wg</span> <span style="color: #f92672">*</span><span style="color: #a6e22e">sync</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">WaitGroup</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span>
+</span>	<span style="color: #a6e22e">fmt</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Printf</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&quot;cpuIntensive(%d): %d\n&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">in</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">cpuIntensive</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">in</span><span style="color: #f8f8f2">))</span>
+	<span style="color: #a6e22e">wg</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Done</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">}</span>
+
+<span style="color: #75715e">// does something CPU intensive</span>
+<span style="color: #66d9ef">func</span> <span style="color: #a6e22e">cpuIntensive</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">n</span> <span style="color: #66d9ef">int</span><span style="color: #f8f8f2">)</span> <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">{</span>
+	<span style="color: #66d9ef">return</span> <span style="color: #a6e22e">n</span> <span style="color: #f92672">*</span> <span style="color: #a6e22e">n</span> <span style="color: #f92672">*</span> <span style="color: #a6e22e">n</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+
+Point to remember - whenever you are mutating parameters (or for that matter <a href="https://tour.golang.org/methods/3">method receivers</a>) make sure you are referencing the original object, not a copy.</p>
+
   </div>
   
 </div>
-
 
 
 
