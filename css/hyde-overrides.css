@@ -20,6 +20,7 @@ html {
 }
 
 .highlight pre {
+	background: #f8f8f8;
 	padding: 1em;
 }
 
