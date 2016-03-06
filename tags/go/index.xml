@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Go on Rafal Gajdulewicz</title>
+    <link>http://blog.gajdulewicz.com/tags/go/</link>
+    <description>Recent content in Go on Rafal Gajdulewicz</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 05 Mar 2016 22:55:32 +0100</lastBuildDate>
+    <atom:link href="http://blog.gajdulewicz.com/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Go gotchas - loop variable and goroutines</title>
+      <link>http://blog.gajdulewicz.com/blog/2016/03/05/go-gotchas---loop-variable-and-goroutines/</link>
+      <pubDate>Sat, 05 Mar 2016 22:55:32 +0100</pubDate>
+      
+      <guid>http://blog.gajdulewicz.com/blog/2016/03/05/go-gotchas---loop-variable-and-goroutines/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://blog.gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/&#34;&gt;Another&lt;/a&gt; Golang issue with goroutines and for loops today :) This time let&amp;rsquo;s assume we start with a simple for loop that calls an anonymous function:
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;package&lt;/span&gt; main
+
+&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;import&lt;/span&gt; (
+	&lt;span style=&#34;color: #BA2121&#34;&gt;&amp;quot;fmt&amp;quot;&lt;/span&gt;
+	&lt;span style=&#34;color: #BA2121&#34;&gt;&amp;quot;sync&amp;quot;&lt;/span&gt;
+)
+
+&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;func&lt;/span&gt; main() {
+	numbers &lt;span style=&#34;color: #666666&#34;&gt;:=&lt;/span&gt; []&lt;span style=&#34;color: #B00040&#34;&gt;int&lt;/span&gt;{&lt;span style=&#34;color: #666666&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color: #666666&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;color: #666666&#34;&gt;3&lt;/span&gt;, &lt;span style=&#34;color: #666666&#34;&gt;4&lt;/span&gt;, &lt;span style=&#34;color: #666666&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color: #666666&#34;&gt;6&lt;/span&gt;}
+	&lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// WaitGroup will be used to wait for child goroutines&lt;/span&gt;
+	&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;var&lt;/span&gt; wg sync.WaitGroup
+	&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;for&lt;/span&gt; _, n &lt;span style=&#34;color: #666666&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;range&lt;/span&gt; numbers {
+		wg.Add(&lt;span style=&#34;color: #666666&#34;&gt;1&lt;/span&gt;)
+		&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;func&lt;/span&gt; foo() {
+			fmt.Printf(&lt;span style=&#34;color: #BA2121&#34;&gt;&amp;quot;%d &amp;quot;&lt;/span&gt;, n)
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+This works fine and prints&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;1 2 3 4 5 6&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;but to run the anonymous function in child goroutines - we will add a &lt;code&gt;go&lt;/code&gt; keyword before the function call:
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;package&lt;/span&gt; main
+
+&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;import&lt;/span&gt; (
+	&lt;span style=&#34;color: #BA2121&#34;&gt;&amp;quot;fmt&amp;quot;&lt;/span&gt;
+	&lt;span style=&#34;color: #BA2121&#34;&gt;&amp;quot;sync&amp;quot;&lt;/span&gt;
+)
+
+&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;func&lt;/span&gt; main() {
+	numbers &lt;span style=&#34;color: #666666&#34;&gt;:=&lt;/span&gt; []&lt;span style=&#34;color: #B00040&#34;&gt;int&lt;/span&gt;{&lt;span style=&#34;color: #666666&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color: #666666&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;color: #666666&#34;&gt;3&lt;/span&gt;, &lt;span style=&#34;color: #666666&#34;&gt;4&lt;/span&gt;, &lt;span style=&#34;color: #666666&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color: #666666&#34;&gt;6&lt;/span&gt;}
+	&lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// WaitGroup will be used to wait for child goroutines&lt;/span&gt;
+	&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;var&lt;/span&gt; wg sync.WaitGroup
+	&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;for&lt;/span&gt; _, n &lt;span style=&#34;color: #666666&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;range&lt;/span&gt; numbers {
+		wg.Add(&lt;span style=&#34;color: #666666&#34;&gt;1&lt;/span&gt;)
+&lt;span style=&#34;background-color: #ffffcc&#34;&gt;		&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;go&lt;/span&gt; &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;func&lt;/span&gt; foo() {
+&lt;/span&gt;			fmt.Printf(&lt;span style=&#34;color: #BA2121&#34;&gt;&amp;quot;%d &amp;quot;&lt;/span&gt;, n)
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+and check the result - we would expect to get the same thing as above, or the same numbers in different order, but instead we get&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;6 6 6 6 6 6&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;What&amp;rsquo;s wrong?  We see that all goroutines see the same value of n, and the value they see is equal to the last value of this variable. This suggests that goroutines access the variable not when they are started, but at a later time, when the for loop has run through all elements of &lt;code&gt;numbers&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;This is in fact true - the anonymous function closes over the variable, and uses it&amp;rsquo;s value from the time it was executing, not from the time it was started. To fix the issue we can do two things - copy the loop variable to the for block:
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;for&lt;/span&gt; _, n &lt;span style=&#34;color: #666666&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;range&lt;/span&gt; numbers {
+	wg.Add(&lt;span style=&#34;color: #666666&#34;&gt;1&lt;/span&gt;)
+&lt;span style=&#34;background-color: #ffffcc&#34;&gt;	&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;var&lt;/span&gt; n = n
+&lt;/span&gt;	&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;go&lt;/span&gt; &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;func&lt;/span&gt; foo() {
+		fmt.Printf(&lt;span style=&#34;color: #BA2121&#34;&gt;&amp;quot;%d &amp;quot;&lt;/span&gt;, n)
+		wg.Done()
+	}()
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+or binding the variable to a parameter of the anonymous function:
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;for&lt;/span&gt; _, n &lt;span style=&#34;color: #666666&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;range&lt;/span&gt; numbers {
+	wg.Add(&lt;span style=&#34;color: #666666&#34;&gt;1&lt;/span&gt;)
+&lt;span style=&#34;background-color: #ffffcc&#34;&gt;	&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;go&lt;/span&gt; &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;func&lt;/span&gt; foo(n &lt;span style=&#34;color: #B00040&#34;&gt;int&lt;/span&gt;) {
+&lt;/span&gt;		fmt.Printf(&lt;span style=&#34;color: #BA2121&#34;&gt;&amp;quot;%d &amp;quot;&lt;/span&gt;, n)
+		wg.Done()
+&lt;span style=&#34;background-color: #ffffcc&#34;&gt;	}(n)
+&lt;/span&gt;}
+&lt;/pre&gt;&lt;/div&gt;
+
+Both of those are correct, I prefer the second one but this is really a matter of taste. This problem is not specific to Go, and some other languages go to great lengths to help programmers avoid this trap - &lt;a href=&#34;http://stackoverflow.com/questions/12112881/has-foreachs-use-of-variables-been-changed-in-c-sharp-5&#34;&gt;Microsoft introduced a backwards incompatible change in C# 5.0 to fix this&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

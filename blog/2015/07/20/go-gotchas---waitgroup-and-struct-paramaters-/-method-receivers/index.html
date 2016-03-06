@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
-  <title>Rafal Gajdulewicz &middot; Rafal Gajdulewicz</title>
+  <title>Go gotchas - WaitGroup (and struct paramaters / method receivers) &middot; Rafal Gajdulewicz</title>
 
   
   <link rel="stylesheet" href="http://blog.gajdulewicz.com/css/poole.css">
@@ -28,7 +28,7 @@
   
   
   
-  <link href="http://blog.gajdulewicz.com/index.xml" rel="alternate" type="application/rss+xml" title="Rafal Gajdulewicz &middot; Rafal Gajdulewicz" />
+  
 
   <meta name="description" content="">
   <meta name="keywords" content="">
@@ -81,106 +81,11 @@
 
 
 <div class="content container">
-  <div class="posts">
-    
-    
-    <div class="post">
-      <h1 class="post-title">
-        <a href="http://blog.gajdulewicz.com/blog/2016/03/05/go-gotchas---loop-variable-and-goroutines/">Go gotchas - loop variable and goroutines</a>
-      </h1>
-      <span class="post-date">Mar 5, 2016 &middot; 2 minute read &middot; <a href="http://blog.gajdulewicz.com/blog/2016/03/05/go-gotchas---loop-variable-and-goroutines/#disqus_thread">Comments</a>
-      </span>
-      
-      <p><a href="http://blog.gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/">Another</a> Golang issue with goroutines and for loops today :) This time let&rsquo;s assume we start with a simple for loop that calls an anonymous function:
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">package</span> main
-
-<span style="color: #008000; font-weight: bold">import</span> (
-	<span style="color: #BA2121">&quot;fmt&quot;</span>
-	<span style="color: #BA2121">&quot;sync&quot;</span>
-)
-
-<span style="color: #008000; font-weight: bold">func</span> main() {
-	numbers <span style="color: #666666">:=</span> []<span style="color: #B00040">int</span>{<span style="color: #666666">1</span>, <span style="color: #666666">2</span>, <span style="color: #666666">3</span>, <span style="color: #666666">4</span>, <span style="color: #666666">5</span>, <span style="color: #666666">6</span>}
-	<span style="color: #408080; font-style: italic">// WaitGroup will be used to wait for child goroutines</span>
-	<span style="color: #008000; font-weight: bold">var</span> wg sync.WaitGroup
-	<span style="color: #008000; font-weight: bold">for</span> _, n <span style="color: #666666">:=</span> <span style="color: #008000; font-weight: bold">range</span> numbers {
-		wg.Add(<span style="color: #666666">1</span>)
-		<span style="color: #008000; font-weight: bold">func</span> foo() {
-			fmt.Printf(<span style="color: #BA2121">&quot;%d &quot;</span>, n)
-			wg.Done()
-		}()
-	}
-	wg.Wait()
-}
-</pre></div>
-
-This works fine and prints</p>
-
-<p><code>1 2 3 4 5 6</code></p>
-
-<p>but to run the anonymous function in child goroutines - we will add a <code>go</code> keyword before the function call:
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">package</span> main
-
-<span style="color: #008000; font-weight: bold">import</span> (
-	<span style="color: #BA2121">&quot;fmt&quot;</span>
-	<span style="color: #BA2121">&quot;sync&quot;</span>
-)
-
-<span style="color: #008000; font-weight: bold">func</span> main() {
-	numbers <span style="color: #666666">:=</span> []<span style="color: #B00040">int</span>{<span style="color: #666666">1</span>, <span style="color: #666666">2</span>, <span style="color: #666666">3</span>, <span style="color: #666666">4</span>, <span style="color: #666666">5</span>, <span style="color: #666666">6</span>}
-	<span style="color: #408080; font-style: italic">// WaitGroup will be used to wait for child goroutines</span>
-	<span style="color: #008000; font-weight: bold">var</span> wg sync.WaitGroup
-	<span style="color: #008000; font-weight: bold">for</span> _, n <span style="color: #666666">:=</span> <span style="color: #008000; font-weight: bold">range</span> numbers {
-		wg.Add(<span style="color: #666666">1</span>)
-<span style="background-color: #ffffcc">		<span style="color: #008000; font-weight: bold">go</span> <span style="color: #008000; font-weight: bold">func</span> foo() {
-</span>			fmt.Printf(<span style="color: #BA2121">&quot;%d &quot;</span>, n)
-			wg.Done()
-		}()
-	}
-	wg.Wait()
-}
-</pre></div>
-
-and check the result - we would expect to get the same thing as above, or the same numbers in different order, but instead we get</p>
-
-<p><code>6 6 6 6 6 6</code></p>
-
-<p>What&rsquo;s wrong?  We see that all goroutines see the same value of n, and the value they see is equal to the last value of this variable. This suggests that goroutines access the variable not when they are started, but at a later time, when the for loop has run through all elements of <code>numbers</code>.</p>
-
-<p>This is in fact true - the anonymous function closes over the variable, and uses it&rsquo;s value from the time it was executing, not from the time it was started. To fix the issue we can do two things - copy the loop variable to the for block:
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">for</span> _, n <span style="color: #666666">:=</span> <span style="color: #008000; font-weight: bold">range</span> numbers {
-	wg.Add(<span style="color: #666666">1</span>)
-<span style="background-color: #ffffcc">	<span style="color: #008000; font-weight: bold">var</span> n = n
-</span>	<span style="color: #008000; font-weight: bold">go</span> <span style="color: #008000; font-weight: bold">func</span> foo() {
-		fmt.Printf(<span style="color: #BA2121">&quot;%d &quot;</span>, n)
-		wg.Done()
-	}()
-}
-</pre></div>
-
-or binding the variable to a parameter of the anonymous function:
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">for</span> _, n <span style="color: #666666">:=</span> <span style="color: #008000; font-weight: bold">range</span> numbers {
-	wg.Add(<span style="color: #666666">1</span>)
-<span style="background-color: #ffffcc">	<span style="color: #008000; font-weight: bold">go</span> <span style="color: #008000; font-weight: bold">func</span> foo(n <span style="color: #B00040">int</span>) {
-</span>		fmt.Printf(<span style="color: #BA2121">&quot;%d &quot;</span>, n)
-		wg.Done()
-<span style="background-color: #ffffcc">	}(n)
-</span>}
-</pre></div>
-
-Both of those are correct, I prefer the second one but this is really a matter of taste. This problem is not specific to Go, and some other languages go to great lengths to help programmers avoid this trap - <a href="http://stackoverflow.com/questions/12112881/has-foreachs-use-of-variables-been-changed-in-c-sharp-5">Microsoft introduced a backwards incompatible change in C# 5.0 to fix this</a>.</p>
-
-      
-    </div>
-    
-    <div class="post">
-      <h1 class="post-title">
-        <a href="http://blog.gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/">Go gotchas - WaitGroup (and struct paramaters / method receivers)</a>
-      </h1>
-      <span class="post-date">Jul 20, 2015 &middot; 3 minute read &middot; <a href="http://blog.gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/#disqus_thread">Comments</a>
-      </span>
-      
-      <p><a href="https://golang.org/">Go</a> has been my go-to side project language for quite some time now (since before v1.0), and when I started the <a href="http://cryptopals.com">Matasano crypto challenges</a> it seemed like a perfect fit for a number of reasons - it doesn&rsquo;t force me to write a lot of boilerplate, is low-level enough to allow implementing your own crypto primitives and it comes with a rich standard library (I am looking at you Scala). I made my way through the first set and while solving one of the problems I wanted to run a certain function in parallel.</p>
+  <div class="post">
+    <h1 class="post-title">Go gotchas - WaitGroup (and struct paramaters / method receivers)</h1>
+    <span class="post-date">Jul 20, 2015 &middot; 3 minute read &middot; <a href="http://blog.gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/#disqus_thread">Comments</a>
+    </span>
+    <p><a href="https://golang.org/">Go</a> has been my go-to side project language for quite some time now (since before v1.0), and when I started the <a href="http://cryptopals.com">Matasano crypto challenges</a> it seemed like a perfect fit for a number of reasons - it doesn&rsquo;t force me to write a lot of boilerplate, is low-level enough to allow implementing your own crypto primitives and it comes with a rich standard library (I am looking at you Scala). I made my way through the first set and while solving one of the problems I wanted to run a certain function in parallel.</p>
 
 <p>The simplest way of making this use all CPU cores is to run each calculation in it&rsquo;s own goroutine, and the standard way tracking if all of them completed is using a sync.WaitGroup - for simplicity&rsquo;s sake this code assumes we only care about side effects (printing) and do not consume the result:
 <div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">package</span> main
@@ -277,12 +182,8 @@ fatal error: all goroutines are asleep - deadlock!
 
 Point to remember - whenever you are mutating parameters (or for that matter <a href="https://tour.golang.org/methods/3">method receivers</a>) make sure you are referencing the original object, not a copy.</p>
 
-      
-    </div>
-    
-    
-    
   </div>
+  <div id="disqus_thread"></div>
 </div>
 
 
@@ -295,6 +196,19 @@ var disqus_shortname = "blog-gajdulewicz-com";
     (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
 }());
 </script>
+
+
+
+<script type="text/javascript">
+    var disqus_shortname = "blog-gajdulewicz-com";
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 
 </body>
