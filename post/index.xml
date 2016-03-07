@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Rafal Gajdulewicz</title>
-    <link>http://blog.gajdulewicz.com/post/</link>
+    <link>http://gajdulewicz.com/post/</link>
     <description>Recent content in Posts on Rafal Gajdulewicz</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 05 Mar 2016 22:55:32 +0100</lastBuildDate>
-    <atom:link href="http://blog.gajdulewicz.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://gajdulewicz.com/post/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Go gotchas - loop variable and goroutines</title>
-      <link>http://blog.gajdulewicz.com/blog/2016/03/05/go-gotchas---loop-variable-and-goroutines/</link>
+      <link>http://gajdulewicz.com/blog/2016/03/05/go-gotchas---loop-variable-and-goroutines/</link>
       <pubDate>Sat, 05 Mar 2016 22:55:32 +0100</pubDate>
       
-      <guid>http://blog.gajdulewicz.com/blog/2016/03/05/go-gotchas---loop-variable-and-goroutines/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;http://blog.gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/&#34;&gt;Another&lt;/a&gt; Golang issue with goroutines and for loops today :) This time let&amp;rsquo;s assume we start with a simple for loop that calls an anonymous function:
+      <guid>http://gajdulewicz.com/blog/2016/03/05/go-gotchas---loop-variable-and-goroutines/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/&#34;&gt;Another&lt;/a&gt; Golang issue with goroutines and for loops today :) This time let&amp;rsquo;s assume we start with a simple for loop that calls an anonymous function:
 &lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;package&lt;/span&gt; main
 
 &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;import&lt;/span&gt; (
@@ -98,10 +98,10 @@ Both of those are correct, I prefer the second one but this is really a matter o
     
     <item>
       <title>Go gotchas - WaitGroup (and struct paramaters / method receivers)</title>
-      <link>http://blog.gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/</link>
+      <link>http://gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/</link>
       <pubDate>Mon, 20 Jul 2015 21:04:18 +0200</pubDate>
       
-      <guid>http://blog.gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/</guid>
+      <guid>http://gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;https://golang.org/&#34;&gt;Go&lt;/a&gt; has been my go-to side project language for quite some time now (since before v1.0), and when I started the &lt;a href=&#34;http://cryptopals.com&#34;&gt;Matasano crypto challenges&lt;/a&gt; it seemed like a perfect fit for a number of reasons - it doesn&amp;rsquo;t force me to write a lot of boilerplate, is low-level enough to allow implementing your own crypto primitives and it comes with a rich standard library (I am looking at you Scala). I made my way through the first set and while solving one of the problems I wanted to run a certain function in parallel.&lt;/p&gt;
 
 &lt;p&gt;The simplest way of making this use all CPU cores is to run each calculation in it&amp;rsquo;s own goroutine, and the standard way tracking if all of them completed is using a sync.WaitGroup - for simplicity&amp;rsquo;s sake this code assumes we only care about side effects (printing) and do not consume the result:

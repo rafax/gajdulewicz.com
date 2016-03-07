@@ -10,11 +10,11 @@
   <title>Go gotchas - WaitGroup (and struct paramaters / method receivers) &middot; Rafal Gajdulewicz</title>
 
   
-  <link rel="stylesheet" href="http://blog.gajdulewicz.com/css/poole.css">
-  <link rel="stylesheet" href="http://blog.gajdulewicz.com/css/hyde.css">
-  <link rel="stylesheet" href="http://blog.gajdulewicz.com/css/poole-overrides.css">
-  <link rel="stylesheet" href="http://blog.gajdulewicz.com/css/hyde-overrides.css">
-  <link rel="stylesheet" href="http://blog.gajdulewicz.com/css/hyde-x.css">
+  <link rel="stylesheet" href="http://gajdulewicz.com/css/poole.css">
+  <link rel="stylesheet" href="http://gajdulewicz.com/css/hyde.css">
+  <link rel="stylesheet" href="http://gajdulewicz.com/css/poole-overrides.css">
+  <link rel="stylesheet" href="http://gajdulewicz.com/css/hyde-overrides.css">
+  <link rel="stylesheet" href="http://gajdulewicz.com/css/hyde-x.css">
   
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
@@ -22,8 +22,8 @@
   
 
   
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://blog.gajdulewicz.com/touch-icon-144-precomposed.png">
-  <link href="http://blog.gajdulewicz.com/favicon.png" rel="icon">
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://gajdulewicz.com/touch-icon-144-precomposed.png">
+  <link href="http://gajdulewicz.com/favicon.png" rel="icon">
 
   
   
@@ -54,9 +54,9 @@
     </div>
 
     <ul class="sidebar-nav">
-      <li class="sidebar-nav-item"><a href="http://blog.gajdulewicz.com/">Posts</a></li>
+      <li class="sidebar-nav-item"><a href="http://gajdulewicz.com/">Posts</a></li>
       
-      <li class="sidebar-nav-item"><a href="http://blog.gajdulewicz.com/about/">About me</a></li>
+      <li class="sidebar-nav-item"><a href="http://gajdulewicz.com/about/">About me</a></li>
       
     </ul>
 
@@ -83,7 +83,7 @@
 <div class="content container">
   <div class="post">
     <h1 class="post-title">Go gotchas - WaitGroup (and struct paramaters / method receivers)</h1>
-    <span class="post-date">Jul 20, 2015 &middot; 3 minute read &middot; <a href="http://blog.gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/#disqus_thread">Comments</a>
+    <span class="post-date">Jul 20, 2015 &middot; 3 minute read &middot; <a href="http://gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/#disqus_thread">Comments</a>
     </span>
     <p><a href="https://golang.org/">Go</a> has been my go-to side project language for quite some time now (since before v1.0), and when I started the <a href="http://cryptopals.com">Matasano crypto challenges</a> it seemed like a perfect fit for a number of reasons - it doesn&rsquo;t force me to write a lot of boilerplate, is low-level enough to allow implementing your own crypto primitives and it comes with a rich standard library (I am looking at you Scala). I made my way through the first set and while solving one of the problems I wanted to run a certain function in parallel.</p>
 

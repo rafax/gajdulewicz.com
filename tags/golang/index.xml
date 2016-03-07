@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Golang on Rafal Gajdulewicz</title>
-    <link>http://blog.gajdulewicz.com/tags/golang/</link>
+    <link>http://gajdulewicz.com/tags/golang/</link>
     <description>Recent content in Golang on Rafal Gajdulewicz</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 05 Mar 2016 22:55:32 +0100</lastBuildDate>
-    <atom:link href="http://blog.gajdulewicz.com/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://gajdulewicz.com/tags/golang/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Go gotchas - loop variable and goroutines</title>
-      <link>http://blog.gajdulewicz.com/blog/2016/03/05/go-gotchas---loop-variable-and-goroutines/</link>
+      <link>http://gajdulewicz.com/blog/2016/03/05/go-gotchas---loop-variable-and-goroutines/</link>
       <pubDate>Sat, 05 Mar 2016 22:55:32 +0100</pubDate>
       
-      <guid>http://blog.gajdulewicz.com/blog/2016/03/05/go-gotchas---loop-variable-and-goroutines/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;http://blog.gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/&#34;&gt;Another&lt;/a&gt; Golang issue with goroutines and for loops today :) This time let&amp;rsquo;s assume we start with a simple for loop that calls an anonymous function:
+      <guid>http://gajdulewicz.com/blog/2016/03/05/go-gotchas---loop-variable-and-goroutines/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/&#34;&gt;Another&lt;/a&gt; Golang issue with goroutines and for loops today :) This time let&amp;rsquo;s assume we start with a simple for loop that calls an anonymous function:
 &lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;package&lt;/span&gt; main
 
 &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;import&lt;/span&gt; (
