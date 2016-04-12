@@ -3,8 +3,13 @@
   
   <url>
     <loc>http://gajdulewicz.com/</loc>
-    <lastmod>2016-03-05T22:55:32+01:00</lastmod>
+    <lastmod>2016-04-09T17:40:09+02:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://gajdulewicz.com/blog/2016/04/09/issuing-and-validating-tokens-part-1-problem-description/</loc>
+    <lastmod>2016-04-09T17:40:09+02:00</lastmod>
   </url>
   
   <url>

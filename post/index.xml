@@ -6,8 +6,42 @@
     <description>Recent content in Posts on Rafal Gajdulewicz</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 05 Mar 2016 22:55:32 +0100</lastBuildDate>
+    <lastBuildDate>Sat, 09 Apr 2016 17:40:09 +0200</lastBuildDate>
     <atom:link href="http://gajdulewicz.com/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Issuing and validating tokens part 1: Problem description</title>
+      <link>http://gajdulewicz.com/blog/2016/04/09/issuing-and-validating-tokens-part-1-problem-description/</link>
+      <pubDate>Sat, 09 Apr 2016 17:40:09 +0200</pubDate>
+      
+      <guid>http://gajdulewicz.com/blog/2016/04/09/issuing-and-validating-tokens-part-1-problem-description/</guid>
+      <description>&lt;p&gt;Many of the projects I do at work and in my free time require two components to exchange and validate some sort of tokens - whether it&amp;rsquo;s OAuth2 access tokens, session cookies, API keys or other types of data that is generally passed as a string and represents information about the user.&lt;/p&gt;
+
+&lt;p&gt;We generally apply one on two approaches to issuing and validating tokens:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;persist them in some sort of database and load them on every request&lt;/li&gt;
+&lt;li&gt;encrypt, sign and verify them cryptographically&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;First way allows us to make the token smaller (as additional information will generally be stored in the DB) and makes it easier to expire them, but it requires DB lookups and API calls. Second approach means the tokens are larger and harder to expire, but it doesn&amp;rsquo;t require a DB and (in case of asymmetric encryption) can save API calls.&lt;/p&gt;
+
+&lt;p&gt;I want to compare the performance of those two approaches, so I plan to develop a simple API project that will issue tokens and allow clients to validate them using an API call. To add some background let&amp;rsquo;s assume users can purchase subscriptions in our book library, and whenever a purchase is completed we issue a token that can be used to get subscription expiry date, its level (say &lt;em&gt;All books&lt;/em&gt; or &lt;em&gt;Books older than 1 year&lt;/em&gt;) and platforms for which it is available.&lt;/p&gt;
+
+&lt;p&gt;API will have two endpoints - one for issuing tokens and one for verifying them. We are most interested in performance of the verify endpoint, as it directly impacts the (otherwise quick) user experience. We will investigate:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;GUIDs and data stored in Postgres&lt;/li&gt;
+&lt;li&gt;GUIDs and data stored in Redis&lt;/li&gt;
+&lt;li&gt;JWTs containing all user data and encrypted symmetrically&lt;/li&gt;
+&lt;li&gt;JWTs containing all user data and encrypted asymmetrically&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The last option gives us the possibility of sharing our public key with a trusted client so that the payload can be decrypted without hitting the API - we&amp;rsquo;ll try to benchmark that as a separate option. I included both Redis and Postgres as I generally use Postgres as the source of truth database - we&amp;rsquo;ll see how much can be gained by moving hot data to Redis.&lt;/p&gt;
+
+&lt;p&gt;Next post will include code and basic tests, and we&amp;rsquo;ll see where we can go from there.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Go gotchas - loop variable and goroutines</title>

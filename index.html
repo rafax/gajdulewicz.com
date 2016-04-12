@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<html xmlns="https://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
-  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <link href="https://gmpg.org/xfn/11" rel="profile">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
   
@@ -28,7 +28,7 @@
   
   
   
-  <link href="http://gajdulewicz.com/index.xml" rel="alternate" type="application/rss+xml" title="Rafal Gajdulewicz &middot; Rafal Gajdulewicz" />
+  <link href="https://gajdulewicz.com/index.xml" rel="alternate" type="application/rss+xml" title="Rafal Gajdulewicz &middot; Rafal Gajdulewicz" />
 
   <meta name="description" content="">
   <meta name="keywords" content="">
@@ -54,9 +54,9 @@
     </div>
 
     <ul class="sidebar-nav">
-      <li class="sidebar-nav-item"><a href="http://gajdulewicz.com/">Posts</a></li>
+      <li class="sidebar-nav-item"><a href="https://gajdulewicz.com/">Posts</a></li>
       
-      <li class="sidebar-nav-item"><a href="http://gajdulewicz.com/about/">About me</a></li>
+      <li class="sidebar-nav-item"><a href="https://gajdulewicz.com/about/">About me</a></li>
       
     </ul>
 
@@ -86,12 +86,51 @@
     
     <div class="post">
       <h1 class="post-title">
-        <a href="http://gajdulewicz.com/blog/2016/03/05/go-gotchas---loop-variable-and-goroutines/">Go gotchas - loop variable and goroutines</a>
+        <a href="https://gajdulewicz.com/blog/2016/04/09/issuing-and-validating-tokens-part-1-problem-description/">Issuing and validating tokens part 1: Problem description</a>
       </h1>
-      <span class="post-date">Mar 5, 2016 &middot; 2 minute read &middot; <a href="http://gajdulewicz.com/blog/2016/03/05/go-gotchas---loop-variable-and-goroutines/#disqus_thread">Comments</a>
+      <span class="post-date">Apr 9, 2016 &middot; 2 minute read &middot; <a href="https://gajdulewicz.com/blog/2016/04/09/issuing-and-validating-tokens-part-1-problem-description/#disqus_thread">Comments</a>
+      
+      <br/>
+      
       </span>
       
-      <p><a href="http://gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/">Another</a> Golang issue with goroutines and for loops today :) This time let&rsquo;s assume we start with a simple for loop that calls an anonymous function:
+      <p>Many of the projects I do at work and in my free time require two components to exchange and validate some sort of tokens - whether it&rsquo;s OAuth2 access tokens, session cookies, API keys or other types of data that is generally passed as a string and represents information about the user.</p>
+
+<p>We generally apply one on two approaches to issuing and validating tokens:</p>
+
+<ul>
+<li>persist them in some sort of database and load them on every request</li>
+<li>encrypt, sign and verify them cryptographically</li>
+</ul>
+
+<p>First way allows us to make the token smaller (as additional information will generally be stored in the DB) and makes it easier to expire them, but it requires DB lookups and API calls. Second approach means the tokens are larger and harder to expire, but it doesn&rsquo;t require a DB and (in case of asymmetric encryption) can save API calls.</p>
+
+<p>I want to compare the performance of those two approaches, so I plan to develop a simple API project that will issue tokens and allow clients to validate them using an API call. To add some background let&rsquo;s assume users can purchase subscriptions in our book library, and whenever a purchase is completed we issue a token that can be used to get subscription expiry date, its level (say <em>All books</em> or <em>Books older than 1 year</em>) and platforms for which it is available.</p>
+
+<p>API will have two endpoints - one for issuing tokens and one for verifying them. We are most interested in performance of the verify endpoint, as it directly impacts the (otherwise quick) user experience. We will investigate:</p>
+
+<ul>
+<li>GUIDs and data stored in Postgres</li>
+<li>GUIDs and data stored in Redis</li>
+<li>JWTs containing all user data and encrypted symmetrically</li>
+<li>JWTs containing all user data and encrypted asymmetrically</li>
+</ul>
+
+<p>The last option gives us the possibility of sharing our public key with a trusted client so that the payload can be decrypted without hitting the API - we&rsquo;ll try to benchmark that as a separate option. I included both Redis and Postgres as I generally use Postgres as the source of truth database - we&rsquo;ll see how much can be gained by moving hot data to Redis.</p>
+
+<p>Next post will include code and basic tests, and we&rsquo;ll see where we can go from there.</p>
+
+      
+    </div>
+    
+    <div class="post">
+      <h1 class="post-title">
+        <a href="https://gajdulewicz.com/blog/2016/03/05/go-gotchas---loop-variable-and-goroutines/">Go gotchas - loop variable and goroutines</a>
+      </h1>
+      <span class="post-date">Mar 5, 2016 &middot; 2 minute read &middot; <a href="https://gajdulewicz.com/blog/2016/03/05/go-gotchas---loop-variable-and-goroutines/#disqus_thread">Comments</a>
+      </span>
+      
+      <p><a href="https://gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/">Another</a> Golang issue with goroutines and for loops today :) This time let&rsquo;s assume we start with a simple for loop that calls an anonymous function:
 <div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">package</span> main
 
 <span style="color: #008000; font-weight: bold">import</span> (
@@ -168,19 +207,19 @@ or binding the variable to a parameter of the anonymous function:
 </span>}
 </pre></div>
 
-Both of those are correct, I prefer the second one but this is really a matter of taste. This problem is not specific to Go, and some other languages go to great lengths to help programmers avoid this trap - <a href="http://stackoverflow.com/questions/12112881/has-foreachs-use-of-variables-been-changed-in-c-sharp-5">Microsoft introduced a backwards incompatible change in C# 5.0 to fix this</a>.</p>
+Both of those are correct, I prefer the second one but this is really a matter of taste. This problem is not specific to Go, and some other languages go to great lengths to help programmers avoid this trap - <a href="https://stackoverflow.com/questions/12112881/has-foreachs-use-of-variables-been-changed-in-c-sharp-5">Microsoft introduced a backwards incompatible change in C# 5.0 to fix this</a>.</p>
 
       
     </div>
     
     <div class="post">
       <h1 class="post-title">
-        <a href="http://gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/">Go gotchas - WaitGroup (and struct paramaters / method receivers)</a>
+        <a href="https://gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/">Go gotchas - WaitGroup (and struct paramaters / method receivers)</a>
       </h1>
-      <span class="post-date">Jul 20, 2015 &middot; 3 minute read &middot; <a href="http://gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/#disqus_thread">Comments</a>
+      <span class="post-date">Jul 20, 2015 &middot; 3 minute read &middot; <a href="https://gajdulewicz.com/blog/2015/07/20/go-gotchas---waitgroup-and-struct-paramaters-/-method-receivers/#disqus_thread">Comments</a>
       </span>
       
-      <p><a href="https://golang.org/">Go</a> has been my go-to side project language for quite some time now (since before v1.0), and when I started the <a href="http://cryptopals.com">Matasano crypto challenges</a> it seemed like a perfect fit for a number of reasons - it doesn&rsquo;t force me to write a lot of boilerplate, is low-level enough to allow implementing your own crypto primitives and it comes with a rich standard library (I am looking at you Scala). I made my way through the first set and while solving one of the problems I wanted to run a certain function in parallel.</p>
+      <p><a href="https://golang.org/">Go</a> has been my go-to side project language for quite some time now (since before v1.0), and when I started the <a href="https://cryptopals.com">Matasano crypto challenges</a> it seemed like a perfect fit for a number of reasons - it doesn&rsquo;t force me to write a lot of boilerplate, is low-level enough to allow implementing your own crypto primitives and it comes with a rich standard library (I am looking at you Scala). I made my way through the first set and while solving one of the problems I wanted to run a certain function in parallel.</p>
 
 <p>The simplest way of making this use all CPU cores is to run each calculation in it&rsquo;s own goroutine, and the standard way tracking if all of them completed is using a sync.WaitGroup - for simplicity&rsquo;s sake this code assumes we only care about side effects (printing) and do not consume the result:
 <div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">package</span> main
